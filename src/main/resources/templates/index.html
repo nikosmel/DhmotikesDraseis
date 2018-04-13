@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>multilab</title>
+    <link rel="stylesheet"  th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet"  th:href="@{/css/styles.min.css}">
+</head>
+
+<body>
+<div>
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean-button">
+        <div class="container">
+            <!--<a class="navbar-brand" href="#">Company Name</a>-->
+            <button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1">
+                <span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav mr-auto">
+                    <li class="nav-item"><a class="nav-link " href="#">ΑΡΧΙΚΗ ΣΕΛΙΔΑ</a></li>
+                </ul>
+                <span class="navbar-text actions">
+                    <form th:action="@{/logout}" method="POST" id="logoutForm">
+                        <a>
+                            <button class="btn btn-link" style="margin-left: 7px;" role="link" type="submit"
+                                    value="Logout">Logout
+                            </button>
+                        </a>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </form>
+                </span>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="col-10 offset-1 align-self-center my-auto">
+            <div class="row text-center">
+                <h3 style="color: red;">Αρχές </h3>
+                <legend style="border: 1px solid #DDD !important;"></legend>
+            </div>
+            <div class="row" th:each="arxesDto : ${arxesDtos}">
+                <a th:href="@{/arxh/{id} (id = ${arxesDto.id != null} ? ${arxesDto.id})}">
+                    <h5  th:text="${arxesDto.id} + '. ' + ${arxesDto.subname}"></h5>
+                </a>
+                <legend style="border: solid 1px #DDD !important;  border-bottom: none;"></legend>
+            </div>
+            <div class="row text-center">
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+
+</html>

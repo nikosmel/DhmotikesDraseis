@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>multilab</title>
+    <link rel="stylesheet"  th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet"  th:href="@{/css/styles.min.css}">
+</head>
+
+<body>
+<div>
+    <nav class="navbar navbar-light navbar-expand-md navigation-clean-button">
+        <div class="container">
+            <!--<a class="navbar-brand" href="#">Company Name</a>-->
+            <button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1">
+                <span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav mr-auto">
+                    <li class="nav-item" ><a class="nav-link" th:href="@{/}">ΑΡΧΙΚΗ ΣΕΛΙΔΑ</a></li>
+                </ul>
+                <span class="navbar-text actions">
+                    <form th:action="@{/logout}" method="POST" id="logoutForm">
+                        <a>
+                            <button class="btn btn-link" style="margin-left: 7px;" role="link" type="submit"
+                                    value="Logout">Logout
+                            </button>
+                        </a>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </form>
+                </span>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <form action="#" th:action="@{/saveArxh}" th:object="${arxesDto}" method="post">
+            <div class="col-10 offset-1 align-self-center my-auto">
+                <div class="row text-center">
+                    <h3>ΦΟΡΜΑ ΠΡΟΣΔΙΟΡΙΣΜΟΥ ΩΡΙΜΟΤΗΤΑΣ ΕΦΑΡΜΟΓΗΣ ΑΡΧΩΝ ΣΥΓΧΡΟΝΗΣ ΔΙΑΚΥΒΕΡΝΗΣΗΣ </h3>
+                    <legend style="border: solid 1px #DDD !important;  border-bottom: none;"></legend>
+                </div>
+                <div class="row text-center">
+                    <h3 th:text="${arxesDto.name} + ' : ' + ${arxesDto.subname}" ></h3>
+                    <input type="text" th:field="*{id}" hidden="true">
+                    <input type="text" th:field="*{name}" hidden="true">
+                    <input type="text" th:field="*{subname}" hidden="true">
+                    <input type="text" th:field="*{apotelesma}" hidden="true">
+                    <legend style="border: 1px solid #DDD !important;"></legend>
+                </div>
+                <div class="row border border-grey" th:each="aksonas,it : *{aksonesDtos}" style="background-color: #f7f7f7;">
+                    <div class="row text-center">
+                    </div>
+                    <div class="row" >
+                        <div class="col-4" style="padding-left: 20px;">
+                            <p th:text="${__${it.index}__+1} + '. ' +${aksonas.name}"></p>
+                            <input type="text" th:field="*{aksonesDtos[__${it.index}__].id}" hidden/>
+                            <input type="text" th:field="*{aksonesDtos[__${it.index}__].name}" hidden/>
+                        </div>
+                        <div class="col-8">
+                            <div class="row" th:each="deiktes,it2 : *{aksonesDtos[__${it.index}__].deiktesDtos}">
+                                <div class="col-7">
+                                    <p th:text="${__${it2.index}__+1} + '. ' + ${deiktes.name}"></p>
+                                    <input th:field="*{aksonesDtos[__${it.index}__].deiktesDtos[__${it2.index}__].name}" hidden="hidden"/>
+                                    <input th:field="*{aksonesDtos[__${it.index}__].deiktesDtos[__${it2.index}__].id}" hidden="hidden"/>
+                                </div>
+                                <div class="col-5" style="padding-left: 35px;">
+                                    <ul class="list-inline">
+                                        <li th:each="rb : ${radioButtons}" class="list-inline-item">
+                                            <input type="radio"  th:field="*{aksonesDtos[__${it.index}__].deiktesDtos[__${it2.index}__].stadio}"
+                                                   th:value="${rb.getValue()}"/>
+                                            <label th:text="${rb.getValue()}">1</label>
+                                        </li>
+                                    </ul>
+                                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal"
+                                            data-target="#myModal">Πληροφορίες</button>
+                                </div>
+                                <legend th:if="${__${it2.index}__ +1 < __${#lists.size(aksonas.getDeiktesDtos())}__}"
+                                        style="border: solid 1px #DDD !important;  border-bottom: none; margin-left: -15px;"></legend>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<legend style="border: solid 1px #DDD !important;  border-bottom: none;"></legend>-->
+                </div>
+                <div class="row border border-grey" style="background-color: #f7f7f7;">
+                    <div class="col-9" style="padding-left: 20px;">
+                        <h6 th:text="*{apotelesma}"></h6>
+                    </div>
+                    <div class="col-3">
+                        <ul class="list-inline">
+                            <li th:each="rb : ${radioButtons}" class="list-inline-item">
+                                <input type="radio"  th:field="*{stadio}"
+                                       th:value="${rb.getValue()}"/>
+                                <label th:text="${rb.getValue()}">1</label>
+                            </li>
+                        </ul>
+                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal"
+                                data-target="#myModal">Πληροφορίες</button>
+                    </div>
+                </div>
+                <div class="row" style="padding: 20px 0px 20px 0px;">
+                    <div class="center-block">
+                        <input type="submit" class="button-primary" id="doUpdate" name="_eventId_updateData" value="Αποθήκευση Φόρμας" />
+                    </div>
+                </div>
+
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Πληροφορίες συμπλήρωσης της φόρμας
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+
+</html>
